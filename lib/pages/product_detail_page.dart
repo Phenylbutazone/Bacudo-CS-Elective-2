@@ -1,5 +1,6 @@
 import 'package:cs_elective_2/data/products.dart';
 import 'package:cs_elective_2/state/cart_notifier.dart';
+import 'package:cs_elective_2/widgets/product_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -68,17 +69,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           children: [
             AspectRatio(
               aspectRatio: 16 / 10,
-              child: Image.network(
-                product.imageUrl,
+              child: ProductImage(
+                imageUrl: product.imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => ColoredBox(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: Icon(
-                    Icons.image_not_supported_outlined,
-                    size: 64,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
               ),
             ),
             Padding(

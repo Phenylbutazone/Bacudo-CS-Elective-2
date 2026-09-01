@@ -1,4 +1,5 @@
 import 'package:cs_elective_2/state/cart_notifier.dart';
+import 'package:cs_elective_2/widgets/product_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -37,7 +38,7 @@ class CheckoutPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Your fresh fruits are on their way.',
+              'Your order is on its way.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -51,16 +52,11 @@ class CheckoutPage extends StatelessWidget {
                 child: ListTile(
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: Image.network(
-                      item.product.imageUrl,
+                    child: ProductImage(
+                      imageUrl: item.product.imageUrl,
                       width: 48,
                       height: 48,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const SizedBox(
-                        width: 48,
-                        height: 48,
-                        child: Icon(Icons.image_not_supported_outlined),
-                      ),
                     ),
                   ),
                   title: Text(item.product.name),

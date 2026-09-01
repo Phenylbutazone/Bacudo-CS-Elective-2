@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fresh Fruit Market'),
+        title: const Text('Keyboard Store'),
         actions: [
           // Navigation 1.0 — imperative push for the About screen.
           IconButton(
@@ -110,22 +110,22 @@ class _AboutPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Fresh Fruit Market',
+              'Keyboard Store',
               style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: 12),
             Text(
-              'Your daily source for farm-fresh produce. Browse our '
-              'selection, add items to your cart, and checkout in seconds.',
+              'Your go-to shop for mechanical and gaming keyboards. Browse '
+              'our selection, add items to your cart, and checkout in seconds.',
               style: theme.textTheme.bodyLarge,
             ),
             const SizedBox(height: 24),
             Card(
               child: ListTile(
-                leading: Icon(Icons.eco, color: theme.colorScheme.primary),
-                title: const Text('100% Fresh Guarantee'),
+                leading: Icon(Icons.keyboard, color: theme.colorScheme.primary),
+                title: const Text('Premium Gear Guarantee'),
                 subtitle: const Text(
-                  'Every item is hand-picked and delivered at peak freshness.',
+                  'Every keyboard is quality-checked before it ships.',
                 ),
               ),
             ),

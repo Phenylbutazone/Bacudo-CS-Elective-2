@@ -1,5 +1,6 @@
 import 'package:cs_elective_2/models/product.dart';
 import 'package:cs_elective_2/state/cart_notifier.dart';
+import 'package:cs_elective_2/widgets/product_image.dart';
 import 'package:cs_elective_2/widgets/quantity_control.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +42,7 @@ class CartPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Browse products and add something tasty!',
+                    'Browse products and add something to your setup!',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -99,19 +100,11 @@ class _CartItemTile extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                item.product.imageUrl,
+              child: ProductImage(
+                imageUrl: item.product.imageUrl,
                 width: 72,
                 height: 72,
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => SizedBox(
-                  width: 72,
-                  height: 72,
-                  child: ColoredBox(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    child: const Icon(Icons.image_not_supported_outlined),
-                  ),
-                ),
               ),
             ),
             const SizedBox(width: 12),

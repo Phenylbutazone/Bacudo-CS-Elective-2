@@ -4,11 +4,11 @@ import 'package:cs_elective_2/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const FreshFruitMarketApp());
+  runApp(const KeyboardStoreApp());
 }
 
-class FreshFruitMarketApp extends StatelessWidget {
-  const FreshFruitMarketApp({super.key});
+class KeyboardStoreApp extends StatelessWidget {
+  const KeyboardStoreApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class FreshFruitMarketApp extends StatelessWidget {
       listenable: themeNotifier,
       builder: (context, _) {
         return MaterialApp.router(
-          title: 'Fresh Fruit Market',
+          title: 'Keyboard Store',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
