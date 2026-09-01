@@ -19,42 +19,53 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final border = theme.dividerColor;
 
-    return Card(
+    return Material(
+      color: theme.cardTheme.color,
       child: InkWell(
         onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: ProductImage(
-                imageUrl: product.imageUrl,
-                fit: BoxFit.cover,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: ProductImage(
+                  imageUrl: product.imageUrl,
+                  fit: BoxFit.cover,
+                  dithered: true,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _currency.format(product.price),
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.bold,
+              Container(
+                height: 1,
+                color: border,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 6),
+                    Text(
+                      _currency.format(product.price),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

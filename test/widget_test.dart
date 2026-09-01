@@ -6,7 +6,8 @@ void main() {
     await tester.pumpWidget(const KeyboardStoreApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('Keyboard Store'), findsOneWidget);
+    expect(find.textContaining('Keyboard Store'), findsWidgets);
+    expect(find.textContaining('Wired Keyboards'), findsOneWidget);
     expect(
       find.text('Wooting 60HE+ Lekker Linear 60 RGB Gaming Keyboard (Black)'),
       findsOneWidget,

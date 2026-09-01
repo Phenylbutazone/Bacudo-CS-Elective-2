@@ -16,7 +16,7 @@ class KeyboardStoreApp extends StatelessWidget {
       listenable: themeNotifier,
       builder: (context, _) {
         return MaterialApp.router(
-          title: 'Keyboard Store',
+          title: '⌈ Wired Keyboards ⌋',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),

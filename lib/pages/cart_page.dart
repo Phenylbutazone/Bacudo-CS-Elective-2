@@ -2,6 +2,7 @@ import 'package:cs_elective_2/models/product.dart';
 import 'package:cs_elective_2/state/cart_notifier.dart';
 import 'package:cs_elective_2/widgets/product_image.dart';
 import 'package:cs_elective_2/widgets/quantity_control.dart';
+import 'package:cs_elective_2/widgets/wired/wired_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -14,9 +15,9 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Cart'),
+    return WiredScaffold(
+      appBar: WiredAppBar(
+        title: 'Your Cart',
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
@@ -27,32 +28,30 @@ class CartPage extends StatelessWidget {
         builder: (context, _) {
           if (cartNotifier.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 72,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Your cart is empty',
-                    style: theme.textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Browse products and add something to your setup!',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Your cart is empty.',
+                      style: theme.textTheme.titleLarge,
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: () => context.go('/'),
-                    child: const Text('Browse Products'),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      'The wired waits for no one.',
+                      style: theme.textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    const WiredDivider(),
+                    const SizedBox(height: 24),
+                    FilledButton(
+                      onPressed: () => context.go('/'),
+                      child: const Text('[Browse catalog]'),
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -93,54 +92,46 @@ class _CartItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: ProductImage(
-                imageUrl: item.product.imageUrl,
-                width: 72,
-                height: 72,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.product.name,
-                    style: theme.textTheme.titleMedium,
+    return WiredPanel(
+      child: Row(
+        children: [
+          ProductImage(
+            imageUrl: item.product.imageUrl,
+            width: 72,
+            height: 72,
+            fit: BoxFit.cover,
+            dithered: true,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.product.name,
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${_currency.format(item.product.price)} each',
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'subtotal: ${_currency.format(item.subtotal)}',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.primary,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${_currency.format(item.product.price)} each',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Subtotal: ${_currency.format(item.subtotal)}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            QuantityControl(
-              quantity: item.quantity,
-              onIncrement: () => cartNotifier.increment(item.product),
-              onDecrement: () => cartNotifier.decrement(item.product),
-            ),
-          ],
-        ),
+          ),
+          QuantityControl(
+            quantity: item.quantity,
+            onIncrement: () => cartNotifier.increment(item.product),
+            onDecrement: () => cartNotifier.decrement(item.product),
+          ),
+        ],
       ),
     );
   }
@@ -165,7 +156,7 @@ class _CartSummary extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
+        color: theme.scaffoldBackgroundColor,
         border: Border(
           top: BorderSide(color: theme.dividerColor),
         ),
@@ -181,7 +172,6 @@ class _CartSummary extends StatelessWidget {
                 _currency.format(grandTotal),
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -189,7 +179,7 @@ class _CartSummary extends StatelessWidget {
           const SizedBox(height: 16),
           FilledButton(
             onPressed: onCheckout,
-            child: const Text('Proceed to Checkout'),
+            child: const Text('[Proceed to checkout]'),
           ),
         ],
       ),

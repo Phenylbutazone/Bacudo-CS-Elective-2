@@ -1,5 +1,6 @@
 import 'package:cs_elective_2/state/cart_notifier.dart';
 import 'package:cs_elective_2/widgets/product_image.dart';
+import 'package:cs_elective_2/widgets/wired/wired_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -16,94 +17,100 @@ class CheckoutPage extends StatelessWidget {
     final items = List.of(cartNotifier.items);
     final total = cartNotifier.grandTotal;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Order Confirmed'),
-      ),
+    return WiredScaffold(
+      appBar: const WiredAppBar(title: 'Order Confirmed'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(
-              Icons.check_circle_outline,
-              size: 80,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 16),
             Text(
-              'Thank you for your order!',
+              'Connection established.',
               textAlign: TextAlign.center,
               style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
+            const WiredDivider(),
+            const SizedBox(height: 12),
             Text(
-              'Your order is on its way.',
+              'Thank you for your order.',
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              style: theme.textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Your signal is on its way through the wired.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: 32),
-            Text('Order Summary', style: theme.textTheme.titleLarge),
+            Text('# Order Summary', style: theme.textTheme.titleLarge),
             const SizedBox(height: 12),
             ...items.map(
-              (item) => Card(
-                child: ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: ProductImage(
-                      imageUrl: item.product.imageUrl,
-                      width: 48,
-                      height: 48,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  title: Text(item.product.name),
-                  subtitle: Text(
-                    '${item.quantity} × ${_currency.format(item.product.price)}',
-                  ),
-                  trailing: Text(
-                    _currency.format(item.subtotal),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: WiredPanel(
+                  child: Row(
+                    children: [
+                      ProductImage(
+                        imageUrl: item.product.imageUrl,
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                        dithered: true,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.product.name,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${item.quantity} × '
+                              '${_currency.format(item.product.price)}',
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        _currency.format(item.subtotal),
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Card(
-              color: theme.colorScheme.primaryContainer,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Grand Total',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
+            const SizedBox(height: 8),
+            WiredPanel(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Grand Total', style: theme.textTheme.titleLarge),
+                  Text(
+                    _currency.format(total),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.primary,
                     ),
-                    Text(
-                      _currency.format(total),
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 32),
+            const WiredDivider(label: 'Let\'s all love keyboards.'),
+            const SizedBox(height: 24),
             FilledButton(
               onPressed: () {
                 cartNotifier.clear();
                 context.go('/');
               },
-              child: const Text('Continue Shopping'),
+              child: const Text('[Continue shopping]'),
             ),
           ],
         ),

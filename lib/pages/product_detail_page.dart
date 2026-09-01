@@ -1,6 +1,7 @@
 import 'package:cs_elective_2/data/products.dart';
 import 'package:cs_elective_2/state/cart_notifier.dart';
 import 'package:cs_elective_2/widgets/product_image.dart';
+import 'package:cs_elective_2/widgets/wired/wired_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -37,17 +38,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final theme = Theme.of(context);
 
     if (product == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Not Found')),
+      return WiredScaffold(
+        appBar: WiredAppBar(
+          title: '404',
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/'),
+          ),
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Product not found.'),
+              Text(
+                'No product matched that signal.',
+                style: theme.textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 16),
+              const WiredDivider(),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: () => context.go('/'),
-                child: const Text('Back to Home'),
+                child: const Text('[Back to wired]'),
               ),
             ],
           ),
@@ -55,9 +67,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name),
+    return WiredScaffold(
+      appBar: WiredAppBar(
+        title: 'Layer / Product',
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
@@ -72,6 +84,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: ProductImage(
                 imageUrl: product.imageUrl,
                 fit: BoxFit.cover,
+                dithered: true,
               ),
             ),
             Padding(
@@ -79,51 +92,46 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    product.name,
-                    style: theme.textTheme.headlineSmall,
-                  ),
+                  Text('# ${product.name}', style: theme.textTheme.headlineSmall),
                   const SizedBox(height: 8),
+                  const WiredDivider(),
+                  const SizedBox(height: 12),
                   Text(
                     _currency.format(product.price),
-                    style: theme.textTheme.headlineSmall?.copyWith(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.primary,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     product.category,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    style: theme.textTheme.labelLarge,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     product.description,
                     style: theme.textTheme.bodyLarge,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
+                  const WiredDivider(),
+                  const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
-                    child: FilledButton.icon(
+                    child: FilledButton(
                       onPressed: _addToCart,
-                      icon: Icon(
+                      child: Text(
                         _addedFeedback
-                            ? Icons.check_circle
-                            : Icons.add_shopping_cart,
-                      ),
-                      label: Text(
-                        _addedFeedback ? 'Added to Cart!' : 'Add to Cart',
+                            ? '[Added to cart]'
+                            : '[Add to cart]',
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton.icon(
+                    child: OutlinedButton(
                       onPressed: () => context.go('/cart'),
-                      icon: const Icon(Icons.shopping_cart_outlined),
-                      label: const Text('View Cart'),
+                      child: const Text('[View cart]'),
                     ),
                   ),
                 ],
