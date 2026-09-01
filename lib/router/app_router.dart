@@ -1,30 +1,48 @@
-import 'package:cs_elective_2/pages/fruit_detail_page.dart';
-import 'package:cs_elective_2/pages/fruit_list_page.dart';
+import 'package:cs_elective_2/pages/cart_page.dart';
+import 'package:cs_elective_2/pages/checkout_page.dart';
+import 'package:cs_elective_2/pages/home_page.dart';
+import 'package:cs_elective_2/pages/product_detail_page.dart';
+import 'package:cs_elective_2/state/cart_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey =
+final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 
-/// Nested routes:
-/// - `/`            → fruit list (parent)
-/// - `/fruit/:name` → fruit detail (child of `/`)
+/// Navigation 2.0 routes:
+/// `/`                  → Home (product grid)
+/// `/product/:id`       → Product detail
+/// `/cart`              → Cart
+/// `/checkout`          → Checkout confirmation (guarded)
 final GoRouter appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
+  navigatorKey: rootNavigatorKey,
   initialLocation: '/',
+  redirect: (context, state) {
+    final goingToCheckout = state.matchedLocation == '/checkout';
+    if (goingToCheckout && cartNotifier.isEmpty) {
+      return '/cart';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const FruitListPage(),
-      routes: [
-        GoRoute(
-          path: 'fruit/:name',
-          builder: (context, state) {
-            final name = state.pathParameters['name']!;
-            return FruitDetailPage(name: name);
-          },
-        ),
-      ],
+      builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: '/product/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return ProductDetailPage(productId: id);
+      },
+    ),
+    GoRoute(
+      path: '/cart',
+      builder: (context, state) => const CartPage(),
+    ),
+    GoRoute(
+      path: '/checkout',
+      builder: (context, state) => const CheckoutPage(),
     ),
   ],
 );
