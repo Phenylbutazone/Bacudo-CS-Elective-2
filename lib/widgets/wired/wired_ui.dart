@@ -127,7 +127,7 @@ class WiredOrnament extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '║▒░ ║▒░ ♫ ░▒║ ░▒║',
+      '║▒░ ║▒░  ░▒║ ░▒║',
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
             letterSpacing: 2,
@@ -136,7 +136,6 @@ class WiredOrnament extends StatelessWidget {
   }
 }
 
-/// fauux-style hero block for the home screen.
 class WiredHeroHeader extends StatelessWidget {
   const WiredHeroHeader({
     super.key,

@@ -150,8 +150,7 @@ class _AboutPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'このサイトはウェブ文化、マニアックな音楽、日本、'
-              'ポスト/トランスヒューマニズムに捧げられています。',
+              'このサイトは、キーボードを扱うEコマースサイトに関するものです。',
               style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: 24),
@@ -174,7 +173,7 @@ class _AboutPage extends StatelessWidget {
             const SizedBox(height: 24),
             const WiredDivider(),
             Text(
-              'fauux © 2013-2025 · inspired layout',
+              'Insane Keybpards © 2013-2025',
               style: theme.textTheme.bodySmall,
             ),
           ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Palette inspired by [fauux.neocities.org](https://fauux.neocities.org/).
 abstract final class WiredColors {
   static const wiredBlack = Color(0xFF050505);
   static const wiredSurface = Color(0xFF0D0D0D);

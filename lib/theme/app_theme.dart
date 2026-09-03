@@ -1,7 +1,6 @@
 import 'package:cs_elective_2/theme/wired_colors.dart';
 import 'package:flutter/material.dart';
 
-/// Wired / neocities-inspired themes for the keyboard store.
 class AppTheme {
   static const _mono = 'monospace';
 
@@ -15,7 +14,7 @@ class AppTheme {
         border: WiredColors.wiredBorder,
       );
 
-  /// Light theme — fauux "Go visible" inverted terminal mode.
+ 
   static ThemeData visible() => _build(
         brightness: Brightness.light,
         background: WiredColors.visibleWhite,
