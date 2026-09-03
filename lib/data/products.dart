@@ -69,7 +69,7 @@ const products = <Product>[
         'assets/drymsryms.png',
     description:
         'Razer Huntsman V3 HE Magnetic Mini 65% 8KHz Wired Gaming Keyboard | Hall Effect Magnetic Switches, 8000 Hz Polling, Razer Snap Flex,Razer Snap Tap, Rapid Trigger, Adjustable Actuation.',
-    category: 'Tropical',
+    category: 'Gaming Keyboards',
   ),
   Product(
     id: 'Pulsar eS HE 70',

@@ -26,6 +26,11 @@ class HomePage extends StatelessWidget {
             title: 'Keyboard Store',
             actions: [
               IconButton(
+                icon: const Icon(Icons.view_list_outlined),
+                tooltip: 'Keyboard list',
+                onPressed: () => context.go('/keyboards'),
+              ),
+              IconButton(
                 icon: const Icon(Icons.info_outline),
                 tooltip: 'About',
                 onPressed: () {
