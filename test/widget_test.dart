@@ -2,12 +2,13 @@ import 'package:cs_elective_2/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Fruit list loads at root route', (WidgetTester tester) async {
+  testWidgets('Dialing screen loads at initial route', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('Fruits'), findsOneWidget);
-    expect(find.text('Apple'), findsOneWidget);
-    expect(find.text('Banana'), findsOneWidget);
+    expect(find.text('Dialing'), findsOneWidget);
+    expect(find.text('Pearl Luna'), findsOneWidget);
+    expect(find.text('+ 476-229-9449'), findsOneWidget);
+    expect(find.text('Mute'), findsOneWidget);
   });
 }

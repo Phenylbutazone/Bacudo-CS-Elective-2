@@ -1,3 +1,4 @@
+import 'package:cs_elective_2/pages/dialing_page.dart';
 import 'package:cs_elective_2/pages/fruit_detail_page.dart';
 import 'package:cs_elective_2/pages/fruit_list_page.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,12 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 /// - `/fruit/:name` → fruit detail (child of `/`)
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
+  initialLocation: '/dialing',
   routes: [
+    GoRoute(
+      path: '/dialing',
+      builder: (context, state) => const DialingPage(),
+    ),
     GoRoute(
       path: '/',
       builder: (context, state) => const FruitListPage(),
