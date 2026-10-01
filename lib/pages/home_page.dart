@@ -1,14 +1,40 @@
-import 'package:cs_elective_2/data/products.dart';
-import 'package:cs_elective_2/state/cart_notifier.dart';
+import 'package:cs_elective_2/data/pokemon_service.dart';
+import 'package:cs_elective_2/models/pokemon.dart';
 import 'package:cs_elective_2/state/theme_notifier.dart';
-import 'package:cs_elective_2/widgets/product_card.dart';
 import 'package:cs_elective_2/widgets/wired/wired_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-/// Home screen — responsive product grid with wired neocities styling.
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, this.service});
+
+  final PokemonService? service;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final PokemonService _service;
+  late Future<List<Pokemon>> _pokemonFuture;
+  bool _ownsService = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _service = widget.service ?? PokemonService();
+    _ownsService = widget.service == null;
+    _pokemonFuture = _service.fetchPokemon();
+  }
+
+  @override
+  void dispose() {
+    if (_ownsService) _service.close();
+    super.dispose();
+  }
+
+  void _retry() {
+    setState(() => _pokemonFuture = _service.fetchPokemon());
+  }
 
   int _columnCount(double width) {
     if (width >= 900) return 4;
@@ -23,24 +49,8 @@ class HomePage extends StatelessWidget {
       builder: (context, _) {
         return WiredScaffold(
           appBar: WiredAppBar(
-            title: 'Keyboard Store',
+            title: 'Pokédex',
             actions: [
-              IconButton(
-                icon: const Icon(Icons.view_list_outlined),
-                tooltip: 'Keyboard list',
-                onPressed: () => context.go('/keyboards'),
-              ),
-              IconButton(
-                icon: const Icon(Icons.info_outline),
-                tooltip: 'About',
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const _AboutPage(),
-                    ),
-                  );
-                },
-              ),
               IconButton(
                 icon: Icon(
                   themeNotifier.isVisible
@@ -52,57 +62,83 @@ class HomePage extends StatelessWidget {
                     : 'Go visible',
                 onPressed: themeNotifier.toggle,
               ),
-              ListenableBuilder(
-                listenable: cartNotifier,
-                builder: (context, _) {
-                  return IconButton(
-                    icon: Badge(
-                      isLabelVisible: cartNotifier.totalItemCount > 0,
-                      label: Text('${cartNotifier.totalItemCount}'),
-                      child: const Icon(Icons.shopping_cart_outlined),
-                    ),
-                    tooltip: 'Cart',
-                    onPressed: () => context.go('/cart'),
-                  );
-                },
-              ),
             ],
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {
               final columns = _columnCount(constraints.maxWidth);
 
-              return CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: WiredHeroHeader(
-                      isVisible: themeNotifier.isVisible,
-                      onToggleVisibility: themeNotifier.toggle,
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                    sliver: SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: columns,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.72,
+              return FutureBuilder<List<Pokemon>>(
+                future: _pokemonFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text('Loading Pokémon...'),
+                        ],
                       ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final product = products[index];
-                          return ProductCard(
-                            product: product,
-                            onTap: () =>
-                                context.go('/product/${product.id}'),
-                          );
-                        },
-                        childCount: products.length,
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.cloud_off_outlined, size: 40),
+                            const SizedBox(height: 12),
+                            const Text('Could not load Pokémon.'),
+                            const SizedBox(height: 8),
+                            Text(
+                              '${snapshot.error}',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: 12),
+                            OutlinedButton.icon(
+                              onPressed: _retry,
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Retry'),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                    );
+                  }
+
+                  final pokemon = snapshot.data ?? const <Pokemon>[];
+                  if (pokemon.isEmpty) {
+                    return const Center(child: Text('No Pokémon found.'));
+                  }
+
+                  return CustomScrollView(
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: columns,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.78,
+                              ),
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) =>
+                                _PokemonTile(pokemon: pokemon[index]),
+                            childCount: pokemon.length,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               );
             },
           ),
@@ -112,73 +148,54 @@ class HomePage extends StatelessWidget {
   }
 }
 
-/// About screen reached via Navigation 1.0 (Navigator.push).
-class _AboutPage extends StatelessWidget {
-  const _AboutPage();
+class _PokemonTile extends StatelessWidget {
+  const _PokemonTile({required this.pokemon});
+
+  final Pokemon pokemon;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return WiredScaffold(
-      appBar: WiredAppBar(
-        title: 'About',
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('⌈', style: theme.textTheme.bodySmall),
-            const SizedBox(height: 4),
-            Text(
-              'Keyboard Store',
-              style: theme.textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 12),
-            const WiredDivider(),
-            const SizedBox(height: 12),
-            Text(
-              'Your go-to shop for mechanical and gaming keyboards on the '
-              'wired. Browse our selection, add items to your cart, and '
-              'checkout in seconds.',
-              style: theme.textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'このサイトは、キーボードを扱うEコマースサイトに関するものです。',
-              style: theme.textTheme.bodySmall,
-            ),
-            const SizedBox(height: 24),
-            WiredPanel(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Premium Gear Guarantee',
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Every keyboard is quality-checked before it ships.',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ],
+    return WiredPanel(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Image.network(
+              pokemon.imageUrl,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Icon(
+                  Icons.broken_image_outlined,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
-            const SizedBox(height: 24),
-            const WiredDivider(),
-            Text(
-              'Insane Keybpards © 2013-2025',
-              style: theme.textTheme.bodySmall,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '#${pokemon.id.toString().padLeft(3, '0')}',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.primary,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            _displayName(pokemon.name),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleSmall,
+          ),
+        ],
       ),
     );
   }
+
+    String _displayName(String name) => name
+      .replaceFirst(RegExp(r'-(altered|50)$'), '')
+      .split('-')
+      .map((part) => '${part[0].toUpperCase()}${part.substring(1)}')
+      .join(' ');
 }
