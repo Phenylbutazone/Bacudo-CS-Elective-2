@@ -1,4 +1,5 @@
 import 'package:cs_elective_2/theme/wired_colors.dart';
+import 'package:cs_elective_2/widgets/pokemon/favorites_panel.dart';
 import 'package:flutter/material.dart';
 
 /// CRT scanline overlay reminiscent of fauux's dithered neocities pages.
@@ -38,7 +39,8 @@ class _ScanlinePainter extends CustomPainter {
       oldDelegate.color != color;
 }
 
-/// Wraps a screen with subtle scanlines over the scaffold body.
+/// Wraps a screen with subtle scanlines over the scaffold body, and the
+/// collapsible favorites panel under the app bar.
 class WiredScaffold extends StatelessWidget {
   const WiredScaffold({
     super.key,
@@ -59,7 +61,13 @@ class WiredScaffold extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          body,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const FavoritesPanel(),
+              Expanded(child: body),
+            ],
+          ),
           const ScanlineOverlay(),
         ],
       ),
@@ -88,7 +96,7 @@ class WiredAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       leading: leading,
-      actions: actions,
+      actions: [...?actions, const FavoritesPanelToggle()],
       title: Text('⌈ $title ⌋'),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
