@@ -1,3 +1,4 @@
+import 'package:cs_elective_2/data/product_repository.dart';
 import 'package:cs_elective_2/models/product.dart';
 
 const products = <Product>[
@@ -83,7 +84,11 @@ const products = <Product>[
   ),
 ];
 
+/// Looks up a product fetched from Supabase first, then falls back to the
+/// bundled catalogue.
 Product? productById(String id) {
+  final cached = productCache[id];
+  if (cached != null) return cached;
   for (final product in products) {
     if (product.id == id) {
       return product;

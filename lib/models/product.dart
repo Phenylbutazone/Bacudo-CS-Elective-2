@@ -14,6 +14,20 @@ class Product {
   final String imageUrl;
   final String description;
   final String category;
+
+  /// Builds a [Product] from a row of the Supabase `products` table,
+  /// selected as `*, categories(name)` so the category name is embedded.
+  factory Product.fromMap(Map<String, dynamic> map) {
+    final category = map['categories'];
+    return Product(
+      id: map['id'].toString(),
+      name: map['name'] as String? ?? '',
+      price: (map['price'] as num).toDouble(),
+      imageUrl: map['image_url'] as String? ?? '',
+      description: map['description'] as String? ?? '',
+      category: category is Map ? category['name'] as String? ?? '' : '',
+    );
+  }
 }
 
 class CartItem {

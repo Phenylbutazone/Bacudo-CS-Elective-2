@@ -4,6 +4,7 @@ import 'package:cs_elective_2/state/auth_notifier.dart';
 import 'package:cs_elective_2/state/theme_notifier.dart';
 import 'package:cs_elective_2/widgets/wired/wired_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.service});
@@ -52,6 +53,11 @@ class _HomePageState extends State<HomePage> {
           appBar: WiredAppBar(
             title: 'Pokédex',
             actions: [
+              IconButton(
+                icon: const Icon(Icons.keyboard_outlined),
+                tooltip: 'Shop keyboards',
+                onPressed: () => context.go('/keyboards'),
+              ),
               IconButton(
                 icon: Icon(
                   themeNotifier.isVisible
