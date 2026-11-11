@@ -3,7 +3,9 @@ import 'package:cs_elective_2/pages/checkout_page.dart';
 import 'package:cs_elective_2/pages/home_page.dart';
 import 'package:cs_elective_2/pages/keyboard_detail_page.dart';
 import 'package:cs_elective_2/pages/keyboard_list_page.dart';
+import 'package:cs_elective_2/pages/login_page.dart';
 import 'package:cs_elective_2/pages/product_detail_page.dart';
+import 'package:cs_elective_2/state/auth_notifier.dart';
 import 'package:cs_elective_2/state/cart_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,16 +14,26 @@ final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 
 /// Navigation 2.0 routes:
+/// `/login`             → Sign in / sign up (email or Google)
 /// `/`                  → Home (product grid)
 /// `/product/:id`       → Product detail
 /// `/keyboards`         → Keyboard list
 /// `/keyboard/:id`      → Keyboard detail
 /// `/cart`              → Cart
 /// `/checkout`          → Checkout confirmation (guarded)
+///
+/// Every route except `/login` requires a Supabase session. The router
+/// listens to [authNotifier], so signing in (including returning from the
+/// Google OAuth redirect) or out re-runs [GoRouter.redirect].
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/',
+  refreshListenable: authNotifier,
   redirect: (context, state) {
+    final onLogin = state.matchedLocation == '/login';
+    if (!authNotifier.isSignedIn) return onLogin ? null : '/login';
+    if (onLogin) return '/';
+
     final goingToCheckout = state.matchedLocation == '/checkout';
     if (goingToCheckout && cartNotifier.isEmpty) {
       return '/cart';
@@ -29,6 +41,10 @@ final GoRouter appRouter = GoRouter(
     return null;
   },
   routes: [
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginPage(),
+    ),
     GoRoute(
       path: '/',
       builder: (context, state) => const HomePage(),

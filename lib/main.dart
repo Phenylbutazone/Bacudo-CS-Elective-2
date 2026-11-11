@@ -1,9 +1,14 @@
 import 'package:cs_elective_2/router/app_router.dart';
+import 'package:cs_elective_2/state/auth_notifier.dart';
 import 'package:cs_elective_2/state/theme_notifier.dart';
 import 'package:cs_elective_2/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initSupabase();
+  authNotifier = AuthNotifier(Supabase.instance.client.auth);
   runApp(const KeyboardStoreApp());
 }
 

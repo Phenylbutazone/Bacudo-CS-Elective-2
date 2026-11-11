@@ -1,5 +1,6 @@
 import 'package:cs_elective_2/data/pokemon_service.dart';
 import 'package:cs_elective_2/models/pokemon.dart';
+import 'package:cs_elective_2/state/auth_notifier.dart';
 import 'package:cs_elective_2/state/theme_notifier.dart';
 import 'package:cs_elective_2/widgets/wired/wired_ui.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,11 @@ class _HomePageState extends State<HomePage> {
                     ? 'Go invisible'
                     : 'Go visible',
                 onPressed: themeNotifier.toggle,
+              ),
+              IconButton(
+                icon: const Icon(Icons.logout),
+                tooltip: 'Sign out',
+                onPressed: () => authNotifier.signOut(),
               ),
             ],
           ),
